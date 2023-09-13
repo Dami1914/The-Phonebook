@@ -2,9 +2,7 @@ import { useState } from 'react'
 
 function App() {
 
-  const [contactName, setContactName] = useState([
-    {name:"alex iwobi"}
-  ])
+  const [contactName, setContactName] = useState([])
   const [newName, setNewName] = useState('')
 
   function handleChange(event){
@@ -12,12 +10,27 @@ function App() {
     setNewName(value)
     console.log(newName)
   }
+
   function handleSubmit(event){
     event.preventDefault()
-    setContactName(prev=>{
+    handleContactCheck() == true ? alert(`${newName} already exist`): setContactName(prev=>{
       return prev?.concat([{name:newName}])
-    })
+    });
+
     setNewName('')
+  }
+
+  function handleContactCheck(){
+    let truthstate = ""
+      contactName.forEach((ele)=>{
+          if(ele.name.trim() === newName.trim()){
+            truthstate = true
+          }else {
+            truthstate = false
+          }
+      })
+
+      return truthstate
   }
   return (
     <>
@@ -36,6 +49,7 @@ function App() {
             })}
           </ul>
        </div>
+       <div>debug: {newName}</div>
     </>
   )
 }
