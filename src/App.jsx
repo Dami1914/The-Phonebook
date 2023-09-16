@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
 
 function App() {
 
@@ -72,35 +75,15 @@ function App() {
     <>
        <div>
           <h1>Phonebook</h1>
-          <form> 
-              <input type="search" onChange={handleFilter} value={contactFilter} placeholder="filter shown with"/>
-          </form>
+          <Filter handleFilter={handleFilter} contactFilter={contactFilter}/>
           <div>
             <h1>add a new</h1>
-            <form onSubmit={handleSubmit}>
-              <div>
-               <div>
-                 <input onChange={handleChange} id="name" aria-required value={newContact.name} type="text" placeholder="Add name"/> 
-               </div>
-               <div>
-                 <input onChange={handleChange} id="number" aria-required value={newContact.number} type="tel" placeholder="Add number"/>
-               </div>
-               <button type="submit">add</button>
-              </div>
-            </form>
+            <PersonForm handleChange={handleChange} newContact={newContact} handleSubmit={handleSubmit}/>
           </div>
        </div>
        <div>
           <h1>Numbers</h1>
-          <ul>
-            {
-            // filters the contactName based on some conditions and the maps the returned array for filtered render of data
-            contactName.filter((elem)=>{
-             return elem.name.toLowerCase().includes(contactFilter.toLowerCase()) || elem.number.includes(contactFilter)
-            }).map((ele)=>{
-                return <li key={ele.number}>{ele.name} {ele.number}</li>
-            })}
-          </ul>
+          <Persons contactName={contactName} contactFilter={contactFilter} />
        </div>
        <div>debug: {newContact.name}</div>
     </>
