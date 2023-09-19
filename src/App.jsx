@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
+import axios from 'axios'
 
 function App() {
 
@@ -11,6 +12,16 @@ function App() {
     name: "",
     number:""
   })
+
+
+useEffect(()=>{
+  axios
+    .get('http://localhost:3001/persons')
+    .then((response)=>{
+      setContactName(response.data)
+      console.log(response.data)
+    })
+},[])
 
 //handles input for name and number
   function handleChange(event){
