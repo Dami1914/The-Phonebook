@@ -35,13 +35,22 @@ useEffect(()=>{
   //handle operations after submit button is cliked like saving the inputed data,checking if name or contact existed before and so on
   function handleSubmit(event){
     event.preventDefault()
+
     const {name,number} = newContact
     const {nameStatus,numberStatus} = handleContactCheck()
     console.log(nameStatus,numberStatus)
-    nameStatus||numberStatus ? alert(`${nameStatus?nameStatus:numberStatus} already exist`): setContactName(prev=>{
-      return prev?.concat([{name:capitalizeFirstChar(name.toLowerCase()),number:number}])
-    });
-    
+
+    const capitalized = {name:capitalizeFirstChar(name.toLowerCase()),number:number}
+
+    nameStatus||numberStatus ? alert(`${nameStatus?nameStatus:numberStatus} already exist`):
+    axios
+      .post('http://localhost:3001/persons',capitalized)
+      .then(response=>{
+        setContactName(prev=>{
+          return prev?.concat(capitalized)
+        });
+      })    
+
     setNewContact({name:"",number:""})
   }
 
