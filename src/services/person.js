@@ -17,9 +17,14 @@ const updateData = (id,newupdate)=>{
     return request.then((response)=>response.data)
 }
 
+const deleteData = (id)=>{
+    const request = axios.delete(`${baseUrl}/${id}`)
+    return request.then((response)=>response.data)
+}
 
 export default {
     saveData,
     getAllContact,
-    updateData
+    updateData,
+    deleteData
 }

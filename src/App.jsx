@@ -6,7 +6,7 @@ import axios from 'axios'
 import personservice from './services/person'
 
 function App() {
-  const {getAllContact,saveData} = personservice
+  const {getAllContact,saveData,deleteData} = personservice
 
   const [contactName, setContactName] = useState([])
   const [contactFilter, setContactFilter] = useState("")
@@ -99,6 +99,16 @@ useEffect(()=>{
       return returnedvalue
   }
 
+  function handleDelete(id){
+    if(window.confirm("are you sure you want delete this contact")){
+      deleteData(id)
+        .then((response)=>{
+          setContactName(prev=>prev.filter((ele)=>ele.id !== id))
+          console.log(response)
+        })
+    }
+  }
+
   return (
     <>
        <div>
@@ -111,7 +121,11 @@ useEffect(()=>{
        </div>
        <div>
           <h1>Numbers</h1>
-          <Persons contactName={contactName} contactFilter={contactFilter} />
+          {contactName?.filter((elem)=>{
+            return elem.name.toLowerCase().includes(contactFilter.toLowerCase()) || elem.number.includes(contactFilter)
+           })?.map(ele=>{
+              return <Persons key={ele.number} ele={ele} handleDelete={()=>handleDelete(ele.id)}/>
+           })}
        </div>
        <div>debug: {newContact.name}</div>
     </>
