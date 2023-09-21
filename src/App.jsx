@@ -3,8 +3,10 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import axios from 'axios'
+import personservice from './services/person'
 
 function App() {
+  const {getAllContact,saveData} = personservice
 
   const [contactName, setContactName] = useState([])
   const [contactFilter, setContactFilter] = useState("")
@@ -15,10 +17,9 @@ function App() {
 
 
 useEffect(()=>{
-  axios
-    .get('http://localhost:3001/persons')
+   getAllContact()
     .then((response)=>{
-      setContactName(response.data)
+      setContactName(response)
       console.log(response.data)
     })
 },[])
@@ -37,17 +38,24 @@ useEffect(()=>{
     event.preventDefault()
 
     const {name,number} = newContact
+
+    //stop function if name or number input field is empty onsubmit
+    if(name === "" || number === ""){
+      return
+    }
+
+    //stores the returned status of an operation to check if number or name existed before in the database
     const {nameStatus,numberStatus} = handleContactCheck()
     console.log(nameStatus,numberStatus)
 
     const capitalized = {name:capitalizeFirstChar(name.toLowerCase()),number:number}
 
     nameStatus||numberStatus ? alert(`${nameStatus?nameStatus:numberStatus} already exist`):
-    axios
-      .post('http://localhost:3001/persons',capitalized)
+    // post request to save data to database for data persistence
+    saveData(capitalized)
       .then(response=>{
         setContactName(prev=>{
-          return prev?.concat(capitalized)
+          return prev?.concat(response)
         });
       })    
 
