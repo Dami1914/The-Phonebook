@@ -52,10 +52,13 @@ useEffect(()=>{
 
     if(nameStatus||numberStatus){
       if(window.confirm(`${nameStatus||numberStatus} exist in the contact, do yo wish to edit it`)){
-       
+ 
         const currentcontact = contactName.find(a=> a.name === capitalized.name)
+        console.log(numberStatus)
+        numberStatus? alert(`${numberStatus} already exist`):
         updateData(currentcontact.id,capitalized)
           .then((response)=>setContactName((prev)=>prev.map((ele)=>{
+            console.log(response)
             return ele.id === currentcontact.id? response : ele
           })))
       }
@@ -65,7 +68,7 @@ useEffect(()=>{
         setContactName(prev=>{
           return prev?.concat(response)
         });
-      })    
+      }) 
     }
     // post request to save data to database for data persistence
     setNewContact({name:"",number:""})
@@ -93,17 +96,14 @@ useEffect(()=>{
       numberStatus:""
     }
     //checks if name exist before in the contact list
-      contactName.forEach((ele)=>{
-          if(ele.name.trim().toLowerCase() === newContact.name.trim().toLowerCase()){
-            returnedvalue.nameStatus = newContact.name
-          }else {
-            returnedvalue.nameStatus = false
-          }
-      })
+      const nameMatch = contactName.find((a)=> a.name.trim().toLowerCase() === newContact.name.trim().toLowerCase())
+      console.log(nameMatch)
+      returnedvalue.nameStatus = nameMatch?.name
+
       //checks if number exist before in the contact list
-      contactName.forEach((ele)=>{
-        ele.number.trim() === newContact.number.trim() ? returnedvalue.numberStatus = newContact.number : returnedvalue.numberStatus = false
-      })
+      const numberMatch = contactName.find((a)=> a.number.trim() === newContact.number)
+      console.log(numberMatch)
+      returnedvalue.numberStatus = numberMatch?.number
 
       return returnedvalue
   }
