@@ -6,7 +6,7 @@ import axios from 'axios'
 import personservice from './services/person'
 
 function App() {
-  const {getAllContact,saveData,deleteData} = personservice
+  const {getAllContact,saveData,deleteData,updateData} = personservice
 
   const [contactName, setContactName] = useState([])
   const [contactFilter, setContactFilter] = useState("")
@@ -50,15 +50,24 @@ useEffect(()=>{
 
     const capitalized = {name:capitalizeFirstChar(name.toLowerCase()),number:number}
 
-    nameStatus||numberStatus ? alert(`${nameStatus?nameStatus:numberStatus} already exist`):
-    // post request to save data to database for data persistence
-    saveData(capitalized)
+    if(nameStatus||numberStatus){
+      if(window.confirm(`${nameStatus||numberStatus} exist in the contact, do yo wish to edit it`)){
+       
+        const currentcontact = contactName.find(a=> a.name === capitalized.name)
+        updateData(currentcontact.id,capitalized)
+          .then((response)=>setContactName((prev)=>prev.map((ele)=>{
+            return ele.id === currentcontact.id? response : ele
+          })))
+      }
+    }else{
+      saveData(capitalized)
       .then(response=>{
         setContactName(prev=>{
           return prev?.concat(response)
         });
       })    
-
+    }
+    // post request to save data to database for data persistence
     setNewContact({name:"",number:""})
   }
 
