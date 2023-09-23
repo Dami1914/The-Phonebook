@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
-import axios from 'axios'
 import personservice from './services/person'
+import Notification from './components/Notification'
+
 
 function App() {
   const {getAllContact,saveData,deleteData,updateData} = personservice
 
   const [contactName, setContactName] = useState([])
   const [contactFilter, setContactFilter] = useState("")
+  const [notificationMessage,setNotificationMessage] = useState({
+    message:null,
+    isSuccessful: true
+  })
   const [newContact, setNewContact] = useState({
     name: "",
     number:""
@@ -23,6 +28,10 @@ useEffect(()=>{
       console.log(response.data)
     })
 },[])
+
+function handleErrorMessage(event){
+  
+}
 
 //handles input for name and number
   function handleChange(event){
@@ -59,8 +68,13 @@ useEffect(()=>{
         updateData(currentcontact.id,capitalized)
           .then((response)=>setContactName((prev)=>prev.map((ele)=>{
             console.log(response)
+            setNotificationMessage({message:"Data updated successfully",isSuccessful:true})
+            setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),2000)  
             return ele.id === currentcontact.id? response : ele
-          })))
+          }))).catch(response=>{
+            setNotificationMessage({message:"Data not updated",isSuccessful:false})
+            setTimeout(()=>setNotificationMessage({message:null,isSuccessful:false}),2000)
+          })
       }
     }else{
       saveData(capitalized)
@@ -68,7 +82,12 @@ useEffect(()=>{
         setContactName(prev=>{
           return prev?.concat(response)
         });
-      }) 
+        setNotificationMessage({message:"Data saved successfully",isSuccessful:true})
+        setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),2000)
+      }).catch(response=>{
+        setNotificationMessage({message:"Data not saved",isSuccessful:false})
+        setTimeout(()=>setNotificationMessage({message:null,isSuccessful:false}),2000)
+      })
     }
     // post request to save data to database for data persistence
     setNewContact({name:"",number:""})
@@ -114,14 +133,23 @@ useEffect(()=>{
         .then((response)=>{
           setContactName(prev=>prev.filter((ele)=>ele.id !== id))
           console.log(response)
+          setNotificationMessage({message:"Data deleted successfully",isSuccessful:true})
+          setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),12000)
+        })
+        .catch(()=>{
+          setNotificationMessage({message:"Data not deleted",isSuccessful:false})
+          setTimeout(() => {
+            setNotificationMessage({message:null,isSuccessful:false})
+          }, 3000);
         })
     }
   }
-
+  console.log(notificationMessage)
   return (
     <>
        <div>
           <h1>Phonebook</h1>
+          <Notification  message={notificationMessage.message} isSuccessful={notificationMessage.isSuccessful}/>
           <Filter handleFilter={handleFilter} contactFilter={contactFilter}/>
           <div>
             <h1>add a new</h1>
