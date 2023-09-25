@@ -20,6 +20,7 @@ function App() {
     number:""
   })
 
+  console.log("hello world")
 
 useEffect(()=>{
    getAllContact()
@@ -27,6 +28,7 @@ useEffect(()=>{
       setContactName(response)
       console.log(response.data)
     })
+    console.log("hello world1")
 },[])
 
 function handleErrorMessage(event){
@@ -60,7 +62,7 @@ function handleErrorMessage(event){
     const capitalized = {name:capitalizeFirstChar(name.toLowerCase()),number:number}
 
     if(nameStatus||numberStatus){
-      if(window.confirm(`${nameStatus||numberStatus} exist in the contact, do yo wish to edit it`)){
+      if(window.confirm(`${nameStatus||numberStatus} exist in the contact, do you wish to edit it`)){
  
         const currentcontact = contactName.find(a=> a.name === capitalized.name)
         console.log(numberStatus)
@@ -69,11 +71,11 @@ function handleErrorMessage(event){
           .then((response)=>setContactName((prev)=>prev.map((ele)=>{
             console.log(response)
             setNotificationMessage({message:"Data updated successfully",isSuccessful:true})
-            setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),2000)  
+            setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),6000)  
             return ele.id === currentcontact.id? response : ele
           }))).catch(response=>{
-            setNotificationMessage({message:"Data not updated",isSuccessful:false})
-            setTimeout(()=>setNotificationMessage({message:null,isSuccessful:false}),2000)
+            setNotificationMessage({message:`can't update data, information of ${capitalized.name} has been removed from server`,isSuccessful:false})
+            setTimeout(()=>setNotificationMessage({message:null,isSuccessful:false}),6000)
           })
       }
     }else{
@@ -83,10 +85,10 @@ function handleErrorMessage(event){
           return prev?.concat(response)
         });
         setNotificationMessage({message:"Data saved successfully",isSuccessful:true})
-        setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),2000)
+        setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),6000)
       }).catch(response=>{
-        setNotificationMessage({message:"Data not saved",isSuccessful:false})
-        setTimeout(()=>setNotificationMessage({message:null,isSuccessful:false}),2000)
+        setNotificationMessage({message:`cant save data `,isSuccessful:false})
+        setTimeout(()=>setNotificationMessage({message:null,isSuccessful:false}),6000)
       })
     }
     // post request to save data to database for data persistence
@@ -128,23 +130,23 @@ function handleErrorMessage(event){
   }
 
   function handleDelete(id){
-    if(window.confirm("are you sure you want delete this contact")){
+    if(window.confirm("are you sure you want to delete this contact")){
       deleteData(id)
         .then((response)=>{
           setContactName(prev=>prev.filter((ele)=>ele.id !== id))
           console.log(response)
           setNotificationMessage({message:"Data deleted successfully",isSuccessful:true})
-          setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),12000)
+          setTimeout(()=>setNotificationMessage({message:null,isSuccessful:true}),6000)
         })
         .catch(()=>{
-          setNotificationMessage({message:"Data not deleted",isSuccessful:false})
+          setNotificationMessage({message:`can't be deleted, information has been removed from server`,isSuccessful:false})
           setTimeout(() => {
             setNotificationMessage({message:null,isSuccessful:false})
-          }, 3000);
+          }, 6000);
         })
     }
   }
-  console.log(notificationMessage)
+
   return (
     <>
        <div>

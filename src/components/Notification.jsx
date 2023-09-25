@@ -9,11 +9,11 @@ const Notification = ({message,isSuccessful}) => {
 
     const Style = {
       color: `${responseState}`,
-      padding: '5px',
+      padding: '2px',
       fontSize: "25px",
       border: `2px solid ${responseState}`,
       borderRadius: "10px",
-      width: "300px",
+      width: "auto",
       margin: "10px"
     }
 
